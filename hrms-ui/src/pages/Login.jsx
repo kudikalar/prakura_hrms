@@ -1,125 +1,230 @@
 import { useState } from "react";
-import { FaEnvelope, FaLock } from "react-icons/fa";
+import {
+  FaEnvelope,
+  FaLock,
+  FaShieldAlt,
+  FaUserTie,
+  FaUsersCog,
+  FaUserShield,
+} from "react-icons/fa";
+
 import logo from "../assets/prakura-logo.png";
 import illustration from "../assets/login-illustration.png";
+
+/* ROLE CONFIG */
+const roleConfig = {
+  Employee: {
+    gradient: "from-orange-500 to-yellow-400",
+    ring: "focus:ring-orange-400",
+    text: "text-orange-600",
+    badgeBg: "bg-orange-100 text-orange-700 border-orange-200",
+    glow: "hover:shadow-orange-400/40",
+  },
+  HR: {
+    gradient: "from-blue-500 to-cyan-400",
+    ring: "focus:ring-blue-400",
+    text: "text-blue-600",
+    badgeBg: "bg-blue-100 text-blue-700 border-blue-200",
+    glow: "hover:shadow-blue-400/40",
+  },
+  Admin: {
+    gradient: "from-purple-600 to-pink-500",
+    ring: "focus:ring-purple-400",
+    text: "text-purple-600",
+    badgeBg: "bg-purple-100 text-purple-700 border-purple-200",
+    glow: "hover:shadow-purple-400/40",
+  },
+};
+
+const roles = [
+  { name: "Employee", icon: <FaUserTie /> },
+  { name: "HR", icon: <FaUsersCog /> },
+  { name: "Admin", icon: <FaUserShield /> },
+];
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("User");
+  const [role, setRole] = useState("Employee");
+
+  const [errors, setErrors] = useState({});
+
+  const theme = roleConfig[role];
+
+  /* VALIDATION */
+  const validate = () => {
+    const newErrors = {};
+
+    if (!email.trim()) {
+      newErrors.email = "Email is required";
+    }
+
+    if (!password.trim()) {
+      newErrors.password = "Password is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("Login functionality is under development.");
+
+    if (!validate()) return;
+
+    alert(`${role} login functionality is under development.`);
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 
+    <div className="min-h-screen flex items-center justify-center px-4 relative overflow-hidden
       bg-gradient-to-br from-orange-200 via-yellow-100 to-orange-300">
 
-      {/* Glass Container */}
-      <div className="w-full max-w-5xl rounded-3xl 
-        bg-white/25 backdrop-blur-xl border border-white/30 
-        shadow-2xl grid grid-cols-1 md:grid-cols-2 overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute -top-32 -left-32 w-96 h-96 bg-orange-400/30 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 -right-32 w-96 h-96 bg-yellow-400/30 rounded-full blur-3xl" />
 
-        {/* LEFT - FORM */}
+      {/* Glass Card */}
+      <div className="relative w-full max-w-5xl rounded-3xl grid grid-cols-1 md:grid-cols-2 overflow-hidden
+        bg-white/40 backdrop-blur-2xl border border-white/40
+        shadow-[0_30px_80px_rgba(0,0,0,0.18)]
+        animate-fadeIn">
+
+        {/* LEFT PANEL */}
         <div className="p-10 flex flex-col justify-center">
 
-          {/* Logo */}
-          <div className="flex flex-col items-center mb-6">
-            <img src={logo} alt="Prakura IT Solutions" className="w-16 h-16 mb-2" />
-            <h2 className="text-2xl font-bold text-orange-600">
+          {/* Brand */}
+          <div className="flex flex-col items-center mb-8">
+            <img src={logo} alt="Prakura IT Solutions" className="w-20 h-20 mb-3 drop-shadow-lg" />
+            <h1 className={`text-2xl font-bold tracking-wide ${theme.text}`}>
               Prakura IT Solutions
-            </h2>
-            <p className="text-sm text-gray-600">HRMS Portal</p>
+            </h1>
+            <p className="text-sm text-gray-600 tracking-widest">HRMS PORTAL</p>
           </div>
 
-          <h3 className="text-xl font-semibold text-gray-800 mb-4 text-center">
-            Sign In
-          </h3>
+          {/* Role Toggle */}
+          <div className="flex justify-center mb-5">
+            <div className="flex bg-white/60 backdrop-blur rounded-full p-1 shadow-inner">
+              {roles.map((item) => (
+                <button
+                  key={item.name}
+                  type="button"
+                  onClick={() => setRole(item.name)}
+                  className={`flex items-center gap-2 px-5 py-2 text-sm rounded-full transition-all duration-300
+                    ${
+                      role === item.name
+                        ? `bg-gradient-to-r ${theme.gradient} text-white shadow-lg scale-[1.05]`
+                        : "text-gray-500 hover:text-gray-700"
+                    }`}
+                >
+                  {item.icon}
+                  {item.name}
+                </button>
+              ))}
+            </div>
+          </div>
 
-          {/* Role Switch */}
-          <div className="flex gap-4 mb-6 text-sm justify-center">
-            <span
-              className={`cursor-pointer ${
-                role === "User"
-                  ? "font-semibold text-orange-600"
-                  : "text-gray-400"
-              }`}
-              onClick={() => setRole("User")}
-            >
-              User
-            </span>
-            <span className="text-gray-300">|</span>
-            <span
-              className={`cursor-pointer ${
-                role === "Admin"
-                  ? "font-semibold text-orange-600"
-                  : "text-gray-400"
-              }`}
-              onClick={() => setRole("Admin")}
-            >
-              Admin
+          {/* Active Role Badge */}
+          <div className="flex justify-center mb-6">
+            <span className={`px-4 py-1.5 text-xs font-semibold tracking-widest rounded-full border shadow-sm ${theme.badgeBg}`}>
+              ACTIVE ROLE : {role.toUpperCase()}
             </span>
           </div>
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4" noValidate>
 
-            <div className="relative">
-              <FaEnvelope className="absolute left-4 top-3.5 text-orange-500" />
-              <input
-                type="email"
-                placeholder="Email address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full pl-11 pr-4 py-2 rounded-full
-                  bg-white/60 backdrop-blur border border-white/40
-                  focus:outline-none focus:ring-2 focus:ring-orange-300"
-                required
-              />
+            {/* Email */}
+            <div>
+              <div className="relative">
+                <FaEnvelope className={`absolute left-4 top-3.5 ${theme.text}`} />
+                <input
+                  type="email"
+                  placeholder="Email address"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (errors.email) setErrors({ ...errors, email: "" });
+                  }}
+                  className={`w-full pl-11 pr-4 py-2.5 rounded-full
+                    bg-white/70 backdrop-blur border
+                    ${errors.email ? "border-red-400 focus:ring-red-400" : "border-white/50"}
+                    shadow-inner placeholder-gray-400
+                    focus:outline-none focus:ring-2
+                    transition-all duration-300`}
+                />
+              </div>
+              {errors.email && (
+                <p className="mt-1 ml-4 text-xs text-red-600">
+                  {errors.email}
+                </p>
+              )}
             </div>
 
-            <div className="relative">
-              <FaLock className="absolute left-4 top-3.5 text-orange-500" />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full pl-11 pr-4 py-2 rounded-full
-                  bg-white/60 backdrop-blur border border-white/40
-                  focus:outline-none focus:ring-2 focus:ring-orange-300"
-                required
-              />
+            {/* Password */}
+            <div>
+              <div className="relative">
+                <FaLock className={`absolute left-4 top-3.5 ${theme.text}`} />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (errors.password) setErrors({ ...errors, password: "" });
+                  }}
+                  className={`w-full pl-11 pr-4 py-2.5 rounded-full
+                    bg-white/70 backdrop-blur border
+                    ${errors.password ? "border-red-400 focus:ring-red-400" : "border-white/50"}
+                    shadow-inner placeholder-gray-400
+                    focus:outline-none focus:ring-2
+                    transition-all duration-300`}
+                />
+              </div>
+              {errors.password && (
+                <p className="mt-1 ml-4 text-xs text-red-600">
+                  {errors.password}
+                </p>
+              )}
             </div>
 
+            {/* Submit */}
             <button
               type="submit"
-              className="w-full py-2 rounded-full font-semibold text-white
-                bg-gradient-to-r from-orange-500 to-yellow-400
-                hover:from-orange-600 hover:to-yellow-500 transition"
+              className={`w-full py-3 rounded-full font-semibold tracking-wide text-white
+                bg-gradient-to-r ${theme.gradient}
+                shadow-lg ${theme.glow}
+                hover:-translate-y-0.5
+                active:scale-[0.97]
+                transition-all duration-300`}
             >
-              Sign In
+              Sign In as {role}
             </button>
           </form>
 
-          <div className="mt-5 text-center">
+          {/* Footer */}
+          <div className="mt-6 text-center space-y-3">
             <a href="#" className="text-sm text-gray-600 hover:underline">
               Forgot Password?
             </a>
+
+            <div className="flex items-center justify-center gap-2 text-xs
+              bg-white/60 px-4 py-2 rounded-full shadow-sm border border-white/40">
+              <FaShieldAlt className={theme.text} />
+              Secure Role-Based Authentication
+            </div>
+
+            <p className="text-xs text-gray-500">
+              © {new Date().getFullYear()} Prakura IT Solutions
+            </p>
           </div>
         </div>
 
-        {/* RIGHT - IMAGE */}
-        <div className="hidden md:flex items-center justify-center 
-          bg-white/20 backdrop-blur">
-          <img
-            src={illustration}
-            alt="HRMS Illustration"
-            className="w-4/5 drop-shadow-xl"
-          />
+        {/* RIGHT PANEL */}
+        <div className="hidden md:flex items-center justify-center relative">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/40 via-white/20 to-transparent backdrop-blur-sm" />
+          <img src={illustration} alt="HRMS Illustration" className="relative w-4/5 drop-shadow-2xl" />
         </div>
+
       </div>
     </div>
   );
