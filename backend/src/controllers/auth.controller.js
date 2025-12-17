@@ -2,14 +2,19 @@ import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 import { generateToken } from "../utils/token.js";
 
-/* CREATE USER (Admin / HR) */
+/* REGISTER USER */
 export const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    const exists = await User.findOne({ email });
-    if (exists)
+    if (!name || !email || !password || !role) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -38,13 +43,19 @@ export const loginUser = async (req, res) => {
   try {
     const { email, password, role } = req.body;
 
-    const user = await User.findOne({ email, role, isActive: true });
-    if (!user)
-      return res.status(401).json({ message: "Invalid credentials" });
+    if (!email || !password || !role) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
 
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch)
+    const user = await User.findOne({ email, role, isActive: true });
+    if (!user) {
       return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
 
     const token = generateToken(user);
 
