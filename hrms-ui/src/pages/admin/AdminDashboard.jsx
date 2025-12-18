@@ -11,45 +11,48 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="
-      flex min-h-screen relative overflow-hidden
-      bg-gradient-to-br from-indigo-800 via-purple-800 to-fuchsia-700
-    ">
-
-      {/* Ambient Glow */}
-      <div className="absolute -top-40 -left-40 w-96 h-96 bg-pink-500/30 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 -right-40 w-96 h-96 bg-indigo-500/30 rounded-full blur-3xl" />
+    <div
+      className="
+        flex min-h-screen relative overflow-hidden
+        bg-gradient-to-br from-orange-200 via-yellow-100 to-amber-200
+      "
+    >
+      {/* Ambient Glow – SAME AS LOGIN */}
+      <div className="absolute -top-40 -left-40 w-96 h-96 bg-orange-400/30 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 -right-40 w-96 h-96 bg-yellow-400/30 rounded-full blur-3xl" />
 
       <AdminSidebar />
 
       <div className="flex-1 flex flex-col relative z-10">
-
-        {/* HEADER */}
-        <header className="
-          flex items-center justify-between
-          px-8 py-5
-          bg-white/15 backdrop-blur-2xl
-          border-b border-white/20
-          shadow-[0_10px_40px_rgba(0,0,0,0.25)]
-        ">
-          <h1 className="text-white text-xl font-semibold tracking-wide">
+        {/* HEADER – SAME GLASS AS LOGIN */}
+        <header
+          className="
+            flex items-center justify-between
+            px-8 py-5
+            bg-white/40 backdrop-blur-[24px]
+            border-b border-white/40
+            shadow-[0_30px_90px_rgba(0,0,0,0.2)]
+          "
+        >
+          <h1 className="text-gray-800 text-xl font-semibold">
             Admin Dashboard
           </h1>
 
           <div className="flex items-center gap-4">
-
             {/* PROFILE */}
-            <div className="
-              flex items-center gap-2
-              bg-white/20 px-3 py-1.5 rounded-full
-              border border-white/25
-            ">
+            <div
+              className="
+                flex items-center gap-2
+                bg-white/60 px-3 py-1.5 rounded-full
+                border border-white/50
+              "
+            >
               <img
                 src="https://i.pravatar.cc/40"
                 className="w-8 h-8 rounded-full"
                 alt="profile"
               />
-              <span className="text-white text-sm font-medium">
+              <span className="text-gray-800 text-sm font-medium">
                 {user?.name || "Admin User"}
               </span>
             </div>
@@ -68,7 +71,6 @@ export default function AdminDashboard() {
               <FaSignOutAlt />
               Logout
             </button>
-
           </div>
         </header>
 
